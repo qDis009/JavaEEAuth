@@ -1,3 +1,5 @@
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.example.javaeeauthorization.db.Blog" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -7,10 +9,27 @@
 <body>
 <%@include file="vendor/navbar.jsp"%>
 <div class="container">
-    <div class="row mt-5">
+    <div class="row mt-3">
         <div class="col-sm-12">
-
-
+            <%
+                ArrayList<Blog> blogs=(ArrayList<Blog>) request.getAttribute("blogs");
+                if(blogs!=null){
+                    for(Blog blog:blogs){
+            %>
+            <div class="row mt-3">
+                <div class="col-11 mx-auto p-3" style="background-color: lightgray;">
+                    <h2><%=blog.getTitle()%></h2>
+                    <p class="mt-2"><%=blog.getContent()%></p>
+                    <p class="mt-2">
+                        Posted by <strong><%=blog.getUser().getFullName()%></strong>
+                        at <strong><%=blog.getPostDate()%></strong>
+                    </p>
+                </div>
+            </div>
+            <%
+                    }
+                }
+            %>
         </div>
     </div>
 </div>

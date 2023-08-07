@@ -56,7 +56,7 @@
                     <label>Full name: <input type="text" name="fullName" class="form-control"></label>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-success">REGISTER</button>
+                    <button class="btn btn-success">Sign up</button>
                 </div>
             </form>
         </div>

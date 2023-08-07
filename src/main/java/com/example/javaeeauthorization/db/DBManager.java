@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class DBManager {
     private static Connection connection;
@@ -50,5 +51,47 @@ public class DBManager {
             e.printStackTrace();
         }
         return rows>0;
+    }
+    public static boolean addBlog(Blog blog){
+        int rows=0;
+        try {
+            PreparedStatement statement=connection.prepareStatement(
+                    "insert into blogs (user_id,title,content,post_date) values (?,?,?,NOW())");
+            statement.setLong(1,blog.getUser().getId());
+            statement.setString(2,blog.getTitle());
+            statement.setString(3,blog.getContent());
+            rows=statement.executeUpdate();
+            statement.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return rows>0;
+    }
+    public static ArrayList<Blog> getAllBlogs(){
+        ArrayList<Blog> blogs=new ArrayList<>();
+        try {
+            PreparedStatement statement=connection.prepareStatement(""+
+                    "select b.id,b.title,b.content,b.post_date,b.user_id,u.full_name,u.email "+
+                    "from blogs b "+
+                    "inner join users u on u.id=b.user_id "+
+                    "order by b.post_date desc ");
+            ResultSet resultSet=statement.executeQuery();
+            while (resultSet.next()){
+                Blog blog=new Blog();
+                blog.setId(resultSet.getLong("id"));
+                blog.setTitle(resultSet.getString("title"));
+                blog.setContent(resultSet.getString("content"));
+                blog.setPostDate(resultSet.getTimestamp("post_date"));
+                Users user=new Users();
+                user.setId(resultSet.getInt("id"));
+                user.setEmail(resultSet.getString("email"));
+                user.setFullName(resultSet.getString("full_name"));
+                blog.setUser(user);
+                blogs.add(blog);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return blogs;
     }
 }

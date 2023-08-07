@@ -40,7 +40,7 @@
                     <label>Password: <input type="password" name="password" class="form-control"></label>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-success">LOGIN</button>
+                    <button class="btn btn-success">Sign in</button>
                 </div>
             </form>
         </div>

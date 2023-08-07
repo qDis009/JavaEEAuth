@@ -11,6 +11,9 @@
                     if(online){
                 %>
                 <li class="nav-item">
+                    <a class="nav-link" href="/addblog">Add blog</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/profile"><%=currentUser.getFullName()%></a>
                 </li>
                 <li class="nav-item">
