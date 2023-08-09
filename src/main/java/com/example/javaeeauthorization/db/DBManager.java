@@ -94,4 +94,79 @@ public class DBManager {
         }
         return blogs;
     }
+    public static Blog getBlog(Long id){
+        Blog blog=null;
+        try{
+            PreparedStatement statement=connection.prepareStatement(""+
+                    "select b.id,b.title,b.content,b.post_date,b.user_id,u.full_name,u.email "+
+                    "from blogs b " +
+                    "inner join users u on u.id=b.user_id " +
+                    "where b.id=?");
+            statement.setLong(1,id);
+            ResultSet resultSet=statement.executeQuery();
+            while (resultSet.next()){
+                blog=new Blog();
+                blog.setId(resultSet.getLong("id"));
+                blog.setTitle(resultSet.getString("title"));
+                blog.setContent(resultSet.getString("content"));
+                blog.setPostDate(resultSet.getTimestamp("post_date"));
+                Users user=new Users();
+                user.setId(resultSet.getInt("user_id"));
+                user.setEmail(resultSet.getString("email"));
+                user.setFullName(resultSet.getString("full_name"));
+                blog.setUser(user);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return blog;
+    }
+    public static boolean addComment(Comment comment){
+        int rows=0;
+        try {
+            PreparedStatement statement=connection.prepareStatement(""+
+                    "insert into comments(user_id,blog_id,comment,post_date) "+
+                    "values (?,?,?,NOW())");
+            statement.setLong(1,comment.getUser().getId());
+            statement.setLong(2,comment.getBlog().getId());
+            statement.setString(3,comment.getComment());
+            rows=statement.executeUpdate();
+            statement.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return rows>0;
+    }
+    public static ArrayList<Comment> getAllComments(Long blogId){
+        ArrayList<Comment> comments=new ArrayList<>();
+        try {
+            PreparedStatement statement=connection.prepareStatement(""+
+                    "select c.id,c.user_id,c.blog_id,c.comment,u.full_name,u.email,c.post_date "+
+                    "from comments c "+
+                    "inner join users u on c.user_id=u.id "+
+                    "where c.blog_id=? "+
+                    "order by c.post_date desc");
+            statement.setLong(1,blogId);
+            ResultSet resultSet=statement.executeQuery();
+            while (resultSet.next()){
+                Comment comment=new Comment();
+                comment.setId(resultSet.getLong("id"));
+                comment.setComment(resultSet.getString("comment"));
+                comment.setPostDate(resultSet.getTimestamp("post_date"));
+                Users user=new Users();
+                user.setId(resultSet.getInt("user_id"));
+                user.setFullName(resultSet.getString("full_name"));
+                user.setEmail(resultSet.getString("email"));
+                comment.setUser(user);
+                Blog blog=new Blog();
+                blog.setId(resultSet.getLong("blog_id"));
+                comment.setBlog(blog);
+                comments.add(comment);
+            }
+            statement.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return comments;
+    }
 }

@@ -18,7 +18,7 @@
             %>
             <div class="row mt-3">
                 <div class="col-11 mx-auto p-3" style="background-color: lightgray;">
-                    <h2><%=blog.getTitle()%></h2>
+                    <h2><a href="/readblog?id=<%=blog.getId()%>" class="text-dark text-decoration-none"><%=blog.getTitle()%></a></h2>
                     <p class="mt-2"><%=blog.getContent()%></p>
                     <p class="mt-2">
                         Posted by <strong><%=blog.getUser().getFullName()%></strong>
